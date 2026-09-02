@@ -1,0 +1,36 @@
+# --- ESP-IDF build output ---
+build/
+sdkconfig.old
+managed_components/
+dependencies.lock
+# sdkconfig is regenerated from sdkconfig.defaults; uncomment to stop tracking it
+#sdkconfig
+
+# --- guest toolchain output (guests/build.ps1) ---
+greenbox-os/guests/.build/
+greenbox-os/guests/out/
+
+# --- host-side simulators (guests/*/sim) ---
+*.exe
+**/sim/frames/
+**/sim/*.ppm
+**/sim/*.png
+**/sim/*.txt
+
+# --- firmware artifacts if built outside build/ ---
+*.bin
+*.elf
+*.map
+*.o
+*.a
+
+# --- editors / tooling ---
+.vscode/
+.idea/
+compile_commands.json
+__pycache__/
+*.pyc
+
+# --- Windows cruft ---
+Thumbs.db
+desktop.ini

@@ -1,0 +1,46 @@
+# greenbox OS - TTGO T-Display, ESP32-D0WDQ6-V3, 4MB flash, no PSRAM.
+
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="4MB"
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=115200
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+CONFIG_ESP_DEFAULT_CPU_FREQ_240=y
+
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# --- size ---------------------------------------------------------------
+CONFIG_COMPILER_OPTIMIZATION_SIZE=y
+CONFIG_NEWLIB_NANO_FORMAT=y
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_BOOTLOADER_LOG_LEVEL_WARN=y
+
+# --- executable RAM for guests -------------------------------------------
+# Guest code is loaded into the IRAM heap. These are static reservations paid
+# whether or not the radio ever runs, and together they take about 31KB out of
+# the ~75KB pool a guest can be loaded into. Leave them off: the radio here is
+# used for listening, never for throughput, so what they buy is not wanted.
+CONFIG_ESP_WIFI_IRAM_OPT=n
+CONFIG_ESP_WIFI_RX_IRAM_OPT=n
+CONFIG_ESP_WIFI_EXTRA_IRAM_OPT=n
+CONFIG_ESP_WIFI_SLP_IRAM_OPT=n
+
+# --- the radio, sized for listening --------------------------------------
+# oswifi.c never associates: it scans passively and it watches one BSSID in
+# promiscuous mode. So the TX path is vestigial, block acknowledgement never
+# happens, and the RX buffers only ever hold beacons and other people's
+# frames. The IDF defaults are sized for a station carrying traffic; with
+# these, the radio measures ~21KB of heap while it is up.
+CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM=4
+CONFIG_ESP_WIFI_DYNAMIC_RX_BUFFER_NUM=8
+CONFIG_ESP_WIFI_TX_BUFFER_TYPE=1
+CONFIG_ESP_WIFI_DYNAMIC_TX_BUFFER_NUM=8
+CONFIG_ESP_WIFI_AMPDU_TX_ENABLED=n
+CONFIG_ESP_WIFI_AMPDU_RX_ENABLED=n
+# No credentials to keep, and NVS here is the OS settings and the wall clock.
+CONFIG_ESP_WIFI_NVS_ENABLED=n
+
+# --- diagnostics ---------------------------------------------------------
+CONFIG_FREERTOS_USE_TRACE_FACILITY=y
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096
+CONFIG_ESP_SYSTEM_PANIC_PRINT_REBOOT=y

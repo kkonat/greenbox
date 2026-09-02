@@ -1,0 +1,12 @@
+# Serial console at the same 115200 the original clock used.
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=115200
+
+# The probe does its work on the main task; give it room.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
+# 4MB part, matching the flash actually on this board.
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="4MB"
+
+# The board's ESP32-D0WDQ6-V3 is rev 3; allow the full range anyway.
+CONFIG_ESP32_REV_MIN_0=y

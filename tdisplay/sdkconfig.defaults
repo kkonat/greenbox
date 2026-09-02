@@ -1,0 +1,29 @@
+# TTGO T-Display: ESP32-D0WDQ6-V3, 4MB flash.
+
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=115200
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="4MB"
+
+# --- size trimming -----------------------------------------------------------
+# Optimise for size rather than speed.
+CONFIG_COMPILER_OPTIMIZATION_SIZE=y
+
+# The single biggest win. Full newlib printf drags in float formatting, wide
+# chars, and the whole vfprintf engine (~40KB). The "nano" variant covers
+# everything this project prints.
+CONFIG_NEWLIB_NANO_FORMAT=y
+
+# INFO while bringing the board up - the driver logs which SPI pins it claimed
+# and whether the panel came up. Drop to _WARN once things are stable; that
+# saves a few KB of format strings.
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_BOOTLOADER_LOG_LEVEL_WARN=y
+
+# Panic handler: keep the register dump, drop the symbol-heavy backtrace decode.
+CONFIG_ESP_SYSTEM_PANIC_PRINT_REBOOT=y
+
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096
+
+# The ESP32 defaults to 160MHz; this chip is rated for 240.
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+CONFIG_ESP_DEFAULT_CPU_FREQ_240=y
