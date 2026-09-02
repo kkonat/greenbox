@@ -45,8 +45,9 @@ greenbox-os/
   right. Read it before building.
 - **[../tdisplay/README.md](../tdisplay/README.md)** - the bare ESP-IDF starter
   for this same board, and where the hardware facts were established: the
-  verified pin map, the ST7789 traps the driver here inherits, and how to
-  [flash the original clock firmware back](../tdisplay/README.md#restoring-the-original-clock).
+  verified pin map and the
+  [ST7789 traps](../tdisplay/README.md#spi-trap-spi_device_no_dummy-is-mandatory-here)
+  the driver here inherits.
 
 ## Why guests are not just more firmware
 
@@ -1106,6 +1107,7 @@ cd ..\os ; idf.py build ; idf.py -p COM5 flash monitor
 UART0 at 115200, for the things two buttons cannot do:
 
 ```
+help                    list the commands
 ls  run <name>  kill  settime <epoch>  tz <minutes>  free  reboot
 conf                    show the orientation and the theme list
 conf rot <0-3>          0,2 portrait  1,3 landscape

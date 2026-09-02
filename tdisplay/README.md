@@ -123,15 +123,3 @@ This CP2102 intermittently loses a byte on bulk esptool **reads** —
 `Corrupt data, expected 0x1000 bytes but received 0xfff bytes` — at 921600 and
 460800, and even at 115200 on one long 4MB read. Writes are fine. To dump flash,
 read in 256KB chunks with retry and concatenate.
-
-## Restoring the original clock
-
-The board shipped (to us) running a self-built Arduino NTP clock. Full verified
-image:
-
-```powershell
-.. \esp32-clock-backup\full-4MB-clock-firmware.bin   # SHA256 BCFB091C…51C4E7
-esptool --port COM5 --baud 115200 write-flash 0x0 <that file>
-```
-
-It is the only copy on this machine — the source lives on another computer.

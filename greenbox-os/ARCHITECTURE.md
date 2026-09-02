@@ -566,10 +566,17 @@ rather than a second firmware image.
 |---|---|---|---|---|---|---|
 | `clock` | 2,100 B | 1,544 | 296 | 40 | 50 | 1,880 B |
 | `settings` | 2,688 B | 2,052 | 288 | 172 | 72 | 2,512 B |
-| `wherouter` | 8,124 B | 6,716 | 552 | 2,544 | 199 | 9,812 B |
+| `wherouter` | 8,128 B | 6,716 | 556 | 2,540 | 199 | 9,812 B |
 | `mandel` | 11,476 B | 9,836 | 536 | 7,468 | 261 | 17,840 B |
-| `pinball` | 14,376 B | 9,528 | 3,192 | 7,840 | 399 | 20,560 B |
-| `astro` | 15,468 B | 12,524 | 1,172 | 19,576 | 428 | 33,272 B |
+| `pinball` | 12,920 B | 8,444 | 2,968 | 7,856 | 362 | 19,268 B |
+| `pacman` | 13,584 B | 11,072 | 836 | 8,868 | 404 | 20,776 B |
+| `astro` | 13,704 B | 11,180 | 948 | 19,776 | 379 | 31,904 B |
+
+Read straight out of `mkguest.py --info` on the current `guests/out/`, so it
+moves when the guests are rebuilt. `pinball` and `astro` are smaller here than
+the numbers quoted in [README - what the shared rasteriser cost](README.md#what-a-guest-draws-with),
+because that table measures the change itself and this one measures what came
+out of it.
 
 For scale: the same clock built as a standalone IDF app is about 180 KB,
 because it would ship its own copy of everything in the left-hand column of the

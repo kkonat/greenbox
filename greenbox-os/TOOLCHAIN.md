@@ -53,12 +53,35 @@ Environment for any IDF command:
 | `CONFIG_COMPILER_OPTIMIZATION_SIZE` | y | -Os |
 | `CONFIG_NEWLIB_NANO_FORMAT` | y | saves ~40 KB of printf |
 | `CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240` | y | chip is rated for it |
-| `CONFIG_ESP32_WIFI_IRAM_OPT` | **n** | frees ~15 KB IRAM for guest code |
-| `CONFIG_ESP32_WIFI_RX_IRAM_OPT` | **n** | frees ~16 KB IRAM for guest code |
+| `CONFIG_ESP_WIFI_IRAM_OPT` | **n** | keeps IRAM for guest code |
+| `CONFIG_ESP_WIFI_RX_IRAM_OPT` | **n** | as above |
+| `CONFIG_ESP_WIFI_EXTRA_IRAM_OPT` | **n** | as above |
+| `CONFIG_ESP_WIFI_SLP_IRAM_OPT` | **n** | as above |
 | `CONFIG_FREERTOS_USE_TRACE_FACILITY` | y | the launcher reports task state |
 
-The two WiFi IRAM options matter even before WiFi is enabled: guest code is
-loaded into the executable-IRAM heap, and those options would eat half of it.
+The four WiFi IRAM options matter even before WiFi is enabled. They are static
+reservations paid whether or not the radio ever runs, and together they take
+about 31 KB out of the pool guest code is loaded into. The radio here listens
+and never carries traffic, so what they buy is not wanted. Note the `ESP_WIFI_`
+prefix: these were `ESP32_WIFI_` in older IDF, and the old spelling is silently
+ignored rather than rejected.
+
+The radio is also sized for listening rather than throughput - passive scans
+and one BSSID in promiscuous mode, so the TX path is vestigial and the RX
+buffers only ever hold other people's frames:
+
+| setting | value |
+|---|---|
+| `CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM` | 4 |
+| `CONFIG_ESP_WIFI_DYNAMIC_RX_BUFFER_NUM` | 8 |
+| `CONFIG_ESP_WIFI_TX_BUFFER_TYPE` | 1 |
+| `CONFIG_ESP_WIFI_DYNAMIC_TX_BUFFER_NUM` | 8 |
+| `CONFIG_ESP_WIFI_AMPDU_TX_ENABLED` / `_RX_` | n |
+| `CONFIG_ESP_WIFI_NVS_ENABLED` | n |
+
+With those the radio measures about 21 KB of heap while it is up. `NVS_ENABLED`
+is off because there are no credentials to keep - NVS here is the OS settings
+and the wall clock.
 
 ## Partition table
 
@@ -106,14 +129,6 @@ If you need to read flash back, do it in 256 KB chunks with retry and
 concatenate. Do not "fix" this by lowering the flash baud rate for writes. The
 same cable, and the same symptom, is written up in
 [../tdisplay/README.md](../tdisplay/README.md#serial-quirk).
-
-## Do not overwrite
-
-`c:\Users\mieczu\greenbox\esp32-clock-backup\full-4MB-clock-firmware.bin` is the
-only copy of the board's original NTP-clock firmware (SHA256
-`BCFB091C1AFCC4F19303854395739CD838B354FB49395EA791E8397C2751C4E7`). Nothing in
-this project should write to that directory. The procedure for putting it back is in
-[../tdisplay/README.md](../tdisplay/README.md#restoring-the-original-clock).
 
 ## Acceptance checks
 
